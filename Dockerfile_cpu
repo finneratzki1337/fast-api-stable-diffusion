@@ -1,0 +1,40 @@
+FROM ubuntu
+ENV DEBIAN_FRONTEND=noninteractive
+ENV AM_I_IN_A_DOCKER_CONTAINER Yes
+# Updating on every build for security
+RUN apt-get update && apt-get upgrade -y
+
+# Installing necessary setup tools
+RUN apt-get install -y wget && apt-get install -y curl && apt-get install -y git
+# Handling of image files
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
+# Installing python3.9 pip and upgrading pip
+RUN apt-get install -y python3.9 && apt-get install -y python3-pip && python3 -m pip install --upgrade pip
+# Installing uvicorn for running the app
+RUN apt-get install -y uvicorn
+WORKDIR /code
+
+# Getting stable diffusion in CPU Version
+RUN git clone https://github.com/bes-dev/stable_diffusion.openvino.git
+#WORKDIR /code/stable_diffusion.openvino
+
+
+# Or specifically adding requirements txt only
+COPY requirements.txt .
+RUN pip3 install -r requirements.txt
+
+# Installing Stable Diffusion specific requirements
+# Installing OpenVINO
+RUN pip3 install openvino-dev[onnx,pytorch]==2022.3.0
+# Requirements from stable diffusion repo
+RUN pip3 install -r /code/stable_diffusion.openvino/requirements.txt
+
+
+# Switching user for security reasons
+RUN useradd -ms /bin/bash exec-user
+# Adding all Src files
+ADD . /code
+RUN chown exec-user files
+USER exec-user
+
+CMD uvicorn app:app --host 0.0.0.0 --port ${UVICORN_PORT} --workers ${NUMBER_WORKERS}

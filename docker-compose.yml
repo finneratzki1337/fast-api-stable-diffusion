@@ -1,9 +1,11 @@
 version: "3.7"
 services:
   container-app:
+    container_name: stablefast-app
+    image: stablefast-app:v1
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./Dockerfile_gpu
     ports:
       - ${UVICORN_PORT}:${UVICORN_PORT}
     #Directly attach working dir to container
@@ -11,9 +13,11 @@ services:
     #  - ./app:/code/
     
     restart: unless-stopped
-    env_file: .env
+    #env_file: .env
     
     # environment variables from .env file
-    #environment:
-      #USER_NAME: ${USER_NAME}
-      #USER_PASSWORD: ${USER_PASSWORD}
+    environment:
+      USER_NAME: ${USER_NAME}
+      USER_PASSWORD: ${USER_PASSWORD}
+      UVICORN_PORT: ${UVICORN_PORT}
+      NUMBER_WORKERS: ${NUMBER_WORKERS}
