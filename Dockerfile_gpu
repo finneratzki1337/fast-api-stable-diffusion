@@ -1,4 +1,5 @@
-FROM ubuntu
+FROM nvidia/cuda:11.4.2-base-ubuntu20.04
+
 ENV DEBIAN_FRONTEND=noninteractive
 ENV AM_I_IN_A_DOCKER_CONTAINER Yes
 # Updating on every build for security
@@ -37,4 +38,10 @@ ADD . /code
 RUN chown exec-user files
 USER exec-user
 
-CMD uvicorn app:app --host 0.0.0.0 --port ${UVICORN_PORT} --workers ${NUMBER_WORKERS}
+ENV USER_NAME=testuser
+ENV USER_PASSWORD=testpassword
+ENV UVICORN_PORT=5000
+ENV NUMBER_WORKERS=1
+
+#CMD uvicorn app:app --host 0.0.0.0 --port ${UVICORN_PORT} --workers ${NUMBER_WORKERS}
+CMD uvicorn app:app --host 0.0.0.0 --port 5000 --workers 1
