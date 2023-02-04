@@ -26,24 +26,21 @@ WORKDIR /code/stable-diffusion
 RUN conda env create -f environment.yaml
 # Downloading the model
 RUN curl https://f004.backblazeb2.com/file/aai-blog-files/sd-v1-4.ckpt > sd-v1-4.ckpt
-#RUN conda activate ldm
+RUN conda activate ldm
 WORKDIR /code
 # Specifically adding requirements txt only from fastapi
 COPY requirements.txt .
-#RUN pip3 install -r requirements.txt
+RUN pip3 install -r requirements.txt
 # Switching user for security reasons
-#RUN useradd -ms /bin/bash exec-user
+RUN useradd -ms /bin/bash exec-user
 # Adding all Src files
-#ADD . /code
-#RUN chown exec-user files
-#USER exec-user
+ADD . /code
+RUN chown exec-user files
+USER exec-user
 
-#ENV USER_NAME=testuser
-#ENV USER_PASSWORD=testpassword
-#ENV UVICORN_PORT=5000
-#ENV NUMBER_WORKERS=1
+ENV USER_NAME=testuser
+ENV USER_PASSWORD=testpassword
+ENV UVICORN_PORT=5000
+ENV NUMBER_WORKERS=1
 
-#CMD uvicorn app:app --host 0.0.0.0 --port ${UVICORN_PORT} --workers ${NUMBER_WORKERS}
-#CMD uvicorn app:app --host 0.0.0.0 --port 5000 --workers 1
-
-CMD ["python3", "print('Hello World')"]
+CMD uvicorn app:app --host 0.0.0.0 --port ${UVICORN_PORT} --workers ${NUMBER_WORKERS}
