@@ -38,10 +38,10 @@ ADD . /code
 RUN chown exec-user files
 USER exec-user
 
-ENV USER_NAME=testuser
-ENV USER_PASSWORD=testpassword
-ENV UVICORN_PORT=5000
-ENV NUMBER_WORKERS=1
+#ENV USER_NAME=testuser
+#ENV USER_PASSWORD=testpassword
+#ENV UVICORN_PORT=5000
+#ENV NUMBER_WORKERS=1
 
 #CMD uvicorn app:app --host 0.0.0.0 --port ${UVICORN_PORT} --workers ${NUMBER_WORKERS}
-CMD uvicorn app:app --host 0.0.0.0 --port 5000 --workers 1
+#CMD uvicorn app:app --host 0.0.0.0 --port 5000 --workers 1
